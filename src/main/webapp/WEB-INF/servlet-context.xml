@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation=
+	    "http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
+	
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<mvc:annotation-driven />
+	<context:component-scan base-package="com.ssu.**" />
+	<context:component-scan base-package="com.biz.**" />
+
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
+	<mvc:resources mapping="/resources/**" location="/resources/" />
+	<mvc:resources mapping="/css/**" location="/css/" />
+	<mvc:resources mapping="/img/**" location="/img/" />
+	<mvc:resources mapping="/js/**" location="/js/" />
+	<mvc:resources mapping="/vendor/**" location="/vendor/" />
+	<mvc:resources mapping="/scss/**" location="/scss/" />
+	<mvc:resources mapping="/pug/**" location="/pug/" />
+	
+	<bean name="/slogin" class="com.biz.user.LoginController">
+		<property name="memberService">
+			<ref bean="svc"></ref>
+		</property>
+		<!--<constructor-arg>
+			<ref bean="svc"></ref>
+		</constructor-arg>
+		  -->
+	</bean>
+	
+	<bean name="/slogout" class="com.biz.user.LoginController">
+	</bean>
+	
+	<bean name="/crow" class="com.biz.user.LoginController">
+	</bean>
+	
+	<bean name="/mlist" class="com.biz.user.LoginController">
+	<property name="memberService">
+		<ref bean="svc"></ref>
+	</property>
+	<!--<constructor-arg>
+		<ref bean="svc"></ref>
+	</constructor-arg>
+	  -->
+	</bean>
+	<bean name="svc" class="com.biz.user.MemberServiceImpl">
+		<property name="memberServiceImpl">
+			<ref bean="dao"></ref>
+		</property>
+		<!-- <constructor-arg>
+			<ref bean="dao"></ref>
+		</constructor-arg>
+		 -->
+	</bean>
+	
+	<bean name="dao" class="com.biz.user.MemberDAO">
+		<constructor-arg>
+			<ref bean="sqlSessionTemplate"></ref>
+		</constructor-arg>
+	</bean>
+	
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean"> 
+		<property name="dataSource" ref="datasoc"/> 
+		<property name="configLocation" value="classpath:config-mybatis.xml"/> 
+		<property name="mapperLocations" value="classpath:*-map.xml"></property>
+	</bean> 
+
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate"> 
+		<constructor-arg ref="sqlSessionFactory"/> 
+	</bean> 
+	
+	<!-- datasource --> 
+	<bean id="datasoc" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close"> 
+	    <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+	    <property name="url" value="jdbc:oracle:thin:@127.0.0.1:1521:XE" />
+	    <property name="username" value="ssu" />
+	    <property name="password" value="0000" /> 
+	</bean>
+	
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+	
+	
+	
+</beans>
